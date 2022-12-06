@@ -45,7 +45,8 @@ if __name__ == "__main__":
     x_train_tf = tf_transformer.transform(x_train_counts).toarray()
 
     # clf = MultinomialNB().fit(x_train_tf, y_train)
-    scikit_log_reg = LogisticRegression(verbose=1, solver='liblinear',random_state=0, C=5, penalty='l2',max_iter=1000)
+    scikit_log_reg = LogisticRegression(verbose=1, solver='saga',random_state=0, C=10, penalty='l2',max_iter=1000)
+
     clf = scikit_log_reg.fit(x_train_tf, y_train)
 
     x_dev_counts = count_vect.transform(x_dev)

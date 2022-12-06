@@ -7,11 +7,13 @@ Created on Wed Nov 30 09:34:15 2022
 import numpy as np
 import pandas as pd
 import pickle
+import arabic_reshaper
 
 def load_dataset(name):
     datasets = open(f'Data/{name}.txt', 'r', encoding = "UTF-8").readlines()
     dataset = []
     for line in datasets:
+        line = arabic_reshaper.reshape(line)
         dataset.append(line.replace("\n",""))
 
     return np.array(dataset)
