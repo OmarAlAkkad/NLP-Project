@@ -53,10 +53,3 @@ if __name__ == "__main__":
 
     dataset = concat_dataframes(dataframes)
     pickle.dump(dataset, open('dialects_dataframe.p', 'wb'))
-
-
-
-
-
-
-

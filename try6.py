@@ -41,7 +41,7 @@ if __name__ == "__main__":
     count_vect = CountVectorizer()
     x_train_counts = count_vect.fit_transform(x_train)
 
-    tf_transformer = TfidfTransformer(use_idf=False).fit(x_train_counts)
+    tf_transformer = TfidfTransformer(use_idf=True).fit(x_train_counts)
     x_train_tf = tf_transformer.transform(x_train_counts).toarray()
 
     scikit_NB = MultinomialNB()
@@ -88,4 +88,4 @@ if __name__ == "__main__":
              'Recall': [train_recall,test_recall],
              'F1 Score': [train_f1,test_f1],
              })
-    d.to_csv(f'Naive_bayes_results.csv')
+    d.to_csv(f'Naive_bayes_results_true.csv')

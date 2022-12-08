@@ -88,4 +88,4 @@ if __name__ == "__main__":
              'Recall': [train_recall,test_recall],
              'F1 Score': [train_f1,test_f1],
              })
-    d.to_csv('Logistic_Regression_results1.csv')
+    d.to_csv('Logistic_Regression_results_true.csv')
