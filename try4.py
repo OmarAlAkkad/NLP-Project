@@ -64,16 +64,16 @@ def tokenize_sentences(data, max_words, max_len):
 def build_model(input_shape, output_sequence_length, source_vocab_size, output_shape):
 
     inputs = keras.Input(shape=((input_shape[1],input_shape[2])))
-    lstm = Bidirectional(LSTM(256, activation="tanh",return_sequences=True))(inputs)
+    lstm = (LSTM(256, activation="tanh",return_sequences=False))(inputs)
     # attention = SeqSelfAttention(attention_activation='softmax')(lstm)
-    lstm2 = Bidirectional(LSTM(128, activation = 'tanh'))(lstm)
-    dense1 = layers.Dense(512, activation="relu")(lstm2)
+    # lstm2 = Bidirectional(LSTM(128, activation = 'tanh'))(lstm)
+    dense1 = layers.Dense(512, activation="relu")(lstm)
     dense2 = layers.Dense(256, activation="relu")(dense1)
     dense3 = layers.Dense(128, activation="relu")(dense2)
     dense4 = layers.Dense(64, activation="relu")(dense3)
     outputs = layers.Dense(output_shape, activation = 'softmax')(dense4)
     model = keras.Model(inputs=inputs, outputs=outputs, name="target_insect")
-    learning_rate = 0.009
+    learning_rate = 0.0009
 
     model.compile(loss = 'categorical_crossentropy',
                   optimizer = RMSprop(learning_rate),
@@ -108,5 +108,5 @@ if __name__ == "__main__":
     tokenize_dev = tokenize_dev.reshape(tokenize_dev.shape[0],tokenize_dev.shape[1],-1)
 
     model = build_model(tokenize_train.shape, max_train_length, num_train_tokens, y_train_encoded.shape[1])
-    model.fit(tokenize_train, y_train_encoded, batch_size=25, epochs=100, validation_data= (tokenize_dev, y_dev_encoded))
+    model.fit(tokenize_train, y_train_encoded, batch_size=100, epochs=100, validation_data= (tokenize_dev, y_dev_encoded))
     model.save('test')

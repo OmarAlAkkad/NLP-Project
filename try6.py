@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Nov 30 11:54:07 2022
+Created on Wed Dec  7 17:42:45 2022
 
 @author: omars
 """
@@ -41,12 +41,12 @@ if __name__ == "__main__":
     count_vect = CountVectorizer()
     x_train_counts = count_vect.fit_transform(x_train)
 
-    tf_transformer = TfidfTransformer(use_idf=True).fit(x_train_counts)
+    tf_transformer = TfidfTransformer(use_idf=False).fit(x_train_counts)
     x_train_tf = tf_transformer.transform(x_train_counts).toarray()
 
-    scikit_log_reg = LogisticRegression(verbose=1, solver='liblinear',random_state=0, C=5, penalty='l2',max_iter=1000)
+    scikit_NB = MultinomialNB()
 
-    clf = scikit_log_reg.fit(x_train_tf, y_train)
+    clf = scikit_NB.fit(x_train_tf, y_train)
 
     x_dev_counts = count_vect.transform(x_dev)
     x_dev_tfidf = tf_transformer.transform(x_dev_counts).toarray()
@@ -88,4 +88,4 @@ if __name__ == "__main__":
              'Recall': [train_recall,test_recall],
              'F1 Score': [train_f1,test_f1],
              })
-    d.to_csv('Logistic_Regression_results1.csv')
+    d.to_csv(f'Naive_bayes_results.csv')
