@@ -21,7 +21,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from imblearn.over_sampling import SMOTE, ADASYN
 
 def load_dataset():
-    data_file = open('dialects_dataframe4.p', 'rb')
+    data_file = open('dialects_dataframe_over.p', 'rb')
     data = pickle.load(data_file)
     data_file.close()
 
@@ -40,6 +40,12 @@ if __name__ == "__main__":
 
     data = load_dataset()
     inputs, labels = create_inputs_labels(data)
+        
+    # label encode outputs
+    encode = LabelEncoder()
+    encode.fit(['syr','leb','pal','jord'])      
+    labels = encode.transform(labels)
+        
     x_train, x_dev, y_train, y_dev= train_test_split(inputs, labels, stratify=labels, test_size=0.20, random_state=42)
 
     count_vect = CountVectorizer()
@@ -47,25 +53,17 @@ if __name__ == "__main__":
 
     tf_transformer = TfidfTransformer(use_idf=True).fit(x_train_counts)
     x_train_tf = tf_transformer.transform(x_train_counts).toarray()
-    
-    x_dev_counts = count_vect.transform(x_dev)
-    x_dev_tfidf = tf_transformer.transform(x_dev_counts).toarray()
 
-    scikit_SVC = svm.SVC(kernel='rbf',gamma = 10,C=10,degree = 3,verbose=True)
+    scikit_SVC = LinearSVC(max_iter = 10000)
 
     clf = scikit_SVC.fit(x_train_tf, y_train)
 
     predicted = clf.predict(x_train_tf)
 
-    encode = LabelEncoder()
-    encode.fit(['syr','leb','pal','jord'])
-    y_train_encoded = encode.transform(y_train)
-    pred_encoded = encode.transform(predicted)
-
-    train_accuracy = accuracy_score(y_train_encoded, pred_encoded)
-    train_precision = precision_score(y_train_encoded, pred_encoded,average='weighted')
-    train_recall = recall_score(y_train_encoded, pred_encoded,average='weighted')
-    train_f1 = f1_score(y_train_encoded, pred_encoded,average='weighted')
+    train_accuracy = accuracy_score(y_train, predicted)
+    train_precision = precision_score(y_train, predicted,average='weighted')
+    train_recall = recall_score(y_train, predicted,average='weighted')
+    train_f1 = f1_score(y_train, predicted,average='weighted')
     print("Accuracy on the train set = ", train_accuracy)
     print("Precision of the train set = ", train_precision)
     print("Recall of the train set = ", train_recall)
@@ -74,17 +72,15 @@ if __name__ == "__main__":
     # pickle.dump(clf,open('SVC_model.sav','wb'))
     
     # clf = pickle.load(open('SVC_model.sav','rb'))
-        
-    predicted = clf.predict(x_dev_tfidf)
-    encode = LabelEncoder()
-    encode.fit(['syr','leb','pal','jord'])
-    y_dev_encoded = encode.transform(y_dev)
-    pred_encoded = encode.transform(predicted)
+    x_dev_counts = count_vect.fit_transform(x_dev)
+    x_dev_tf = tf_transformer.transform(x_dev_counts).toarray()
+    
+    predicted = clf.predict(x_train_tf)
 
-    test_accuracy = accuracy_score(y_dev_encoded, pred_encoded)
-    test_precision = precision_score(y_dev_encoded, pred_encoded,average='weighted')
-    test_recall = recall_score(y_dev_encoded, pred_encoded,average='weighted')
-    test_f1 = f1_score(y_dev_encoded, pred_encoded,average='weighted')
+    test_accuracy = accuracy_score(y_dev, predicted)
+    test_precision = precision_score(y_dev, predicted,average='weighted')
+    test_recall = recall_score(y_dev, predicted,average='weighted')
+    test_f1 = f1_score(y_dev, predicted,average='weighted')
     print("Accuracy on the dev set = ", test_accuracy)
     print("Precision of the dev set = ", test_precision)
     print("Recall of the dev set = ", test_recall)
@@ -96,4 +92,4 @@ if __name__ == "__main__":
              'Recall': [train_recall,test_recall],
              'F1 Score': [train_f1,test_f1],
              })
-    d.to_csv(f'SVC_results.csv')
+    d.to_csv('over_svc_results_true.csv')
