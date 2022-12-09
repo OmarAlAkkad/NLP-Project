@@ -1,27 +1,24 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Wed Dec  7 19:42:32 2022
+Created on Wed Nov 30 11:54:07 2022
 
-@author: oalakkad
+@author: omars
 """
 import numpy as np
 import pandas as pd
 import pickle
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import MultinomialNB
-from sklearn.svm import LinearSVC
-from sklearn import svm
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-from imblearn.over_sampling import SMOTE, ADASYN
+from sklearn.ensemble import RandomForestClassifier
 
 def load_dataset():
-    data_file = open('dialects_dataframe4.p', 'rb')
+    data_file = open('dialects_dataframe.p', 'rb')
     data = pickle.load(data_file)
     data_file.close()
 
@@ -47,13 +44,13 @@ if __name__ == "__main__":
 
     tf_transformer = TfidfTransformer(use_idf=True).fit(x_train_counts)
     x_train_tf = tf_transformer.transform(x_train_counts).toarray()
-    
+
+    scikit_log_reg = RandomForestClassifier(verbose = 1)
+
+    clf = scikit_log_reg.fit(x_train_tf, y_train)
+
     x_dev_counts = count_vect.transform(x_dev)
     x_dev_tfidf = tf_transformer.transform(x_dev_counts).toarray()
-
-    scikit_SVC = svm.SVC(kernel='rbf',gamma = 10,C=10,degree = 3,verbose=True)
-
-    clf = scikit_SVC.fit(x_train_tf, y_train)
 
     predicted = clf.predict(x_train_tf)
 
@@ -70,11 +67,7 @@ if __name__ == "__main__":
     print("Precision of the train set = ", train_precision)
     print("Recall of the train set = ", train_recall)
     print("F1_score of the train set = ", train_f1)
-    
-    # pickle.dump(clf,open('SVC_model.sav','wb'))
-    
-    # clf = pickle.load(open('SVC_model.sav','rb'))
-        
+
     predicted = clf.predict(x_dev_tfidf)
     encode = LabelEncoder()
     encode.fit(['syr','leb','pal','jord'])
@@ -96,4 +89,4 @@ if __name__ == "__main__":
              'Recall': [train_recall,test_recall],
              'F1 Score': [train_f1,test_f1],
              })
-    d.to_csv(f'SVC_results.csv')
+    d.to_csv('Logistic_Regression_results_true.csv')
