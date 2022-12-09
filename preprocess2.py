@@ -93,7 +93,8 @@ if __name__ == "__main__":
     labels = labels.reshape(-1,1)
     oversample = RandomOverSampler(sampling_strategy='minority')
     # fit and apply the transform
-    inputs, labels = oversample.fit_resample(inputs, labels)
+    for i in range(len(names)):
+        inputs, labels = oversample.fit_resample(inputs, labels)
     inputs = inputs.reshape(-1,)
     labels = labels.reshape(-1,)
     # inputs = list_tostring(inputs)

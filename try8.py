@@ -20,7 +20,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from imblearn.over_sampling import SMOTE, ADASYN
 
 def load_dataset():
-    data_file = open('dialects_dataframe3.p', 'rb')
+    data_file = open('dialects_dataframe4.p', 'rb')
     data = pickle.load(data_file)
     data_file.close()
 
@@ -51,9 +51,6 @@ if __name__ == "__main__":
 
     clf = scikit_SVC.fit(x_train_tf, y_train)
 
-    x_dev_counts = count_vect.transform(x_dev)
-    x_dev_tfidf = tf_transformer.transform(x_dev_counts).toarray()
-
     predicted = clf.predict(x_train_tf)
 
     encode = LabelEncoder()
@@ -69,7 +66,14 @@ if __name__ == "__main__":
     print("Precision of the train set = ", train_precision)
     print("Recall of the train set = ", train_recall)
     print("F1_score of the train set = ", train_f1)
+    
+    # pickle.dump(clf,open('SVC_model.sav','wb'))
+    
+    # clf = pickle.load(open('SVC_model.sav','rb'))
 
+    x_dev_counts = count_vect.transform(x_dev)
+    x_dev_tfidf = tf_transformer.transform(x_dev_counts).toarray()
+    
     predicted = clf.predict(x_dev_tfidf)
     encode = LabelEncoder()
     encode.fit(['syr','leb','pal','jord'])
