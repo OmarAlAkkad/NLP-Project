@@ -114,4 +114,4 @@ if __name__ == "__main__":
     tokenize_dev = tokenize_dev.reshape(tokenize_dev.shape[0],tokenize_dev.shape[1],-1)
 
     model = build_model(tokenize_train.shape, max_train_length, num_train_tokens, y_train_encoded.shape[1])
-    model.fit(tokenize_train, y_train_encoded, batch_size=5000, epochs=100, validation_data= (tokenize_dev, y_dev_encoded))
+    model.fit(tokenize_train, y_train_encoded, batch_size=5000, epochs=5, validation_data= (tokenize_dev, y_dev_encoded))

@@ -11,6 +11,7 @@ import pickle
 import arabic_reshaper
 import nltk
 
+
 def load_dataset(name):
     datasets = open(f'Data/{name}.txt', 'r', encoding = "UTF-8").readlines()
     dataset = []
@@ -66,6 +67,6 @@ if __name__ == "__main__":
         dataframes.append(locals()[f'{name}_dataframe'])
 
     dataset = concat_dataframes(dataframes)
-    pickle.dump(dataset, open('dialects_dataframe2.p', 'wb'))
+    # pickle.dump(dataset, open('dialects_dataframe2.p', 'wb'))
 
 

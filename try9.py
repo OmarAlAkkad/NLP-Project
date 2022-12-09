@@ -44,7 +44,7 @@ import keras
 import tkseem as tk
 
 def load_dataset():
-    data_file = open('dialects_dataframe.p', 'rb')
+    data_file = open('dialects_dataframe3.p', 'rb')
     data = pickle.load(data_file)
     data_file.close()
 
