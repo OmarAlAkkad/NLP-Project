@@ -57,8 +57,8 @@ if __name__ == "__main__":
     for name in names:
         locals()[f'labels_{name}'] = label_dataset(locals()[f'{name}'],name)
         
-    for name in names:
-        locals()[f'{name}'] = tokenize_dataset(locals()[f'{name}'])    
+    # for name in names:
+    #     locals()[f'{name}'] = tokenize_dataset(locals()[f'{name}'])    
         
     dataframes = []
     for name in names:

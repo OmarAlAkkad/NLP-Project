@@ -51,11 +51,11 @@ if __name__ == "__main__":
     count_vect = CountVectorizer()
     x_train_counts = count_vect.fit_transform(x_train)
 
-    tf_transformer = TfidfTransformer(use_idf=True).fit(x_train_counts)
+    tf_transformer = TfidfTransformer(use_idf=False).fit(x_train_counts)
     x_train_tf = tf_transformer.transform(x_train_counts).toarray()
 
-    scikit_SVC = LinearSVC(max_iter = 10000)
-
+    scikit_SVC = MultinomialNB()
+    
     clf = scikit_SVC.fit(x_train_tf, y_train)
 
     predicted = clf.predict(x_train_tf)
@@ -64,18 +64,29 @@ if __name__ == "__main__":
     train_precision = precision_score(y_train, predicted,average='weighted')
     train_recall = recall_score(y_train, predicted,average='weighted')
     train_f1 = f1_score(y_train, predicted,average='weighted')
+    pickle.dump(train_accuracy,open('train_accuracy.p','wb'))
+    pickle.dump(train_precision,open('train_precision.p','wb'))
+    pickle.dump(train_recall,open('train_recall.p','wb'))
+    pickle.dump(train_f1,open('train_f1.p','wb'))
     print("Accuracy on the train set = ", train_accuracy)
     print("Precision of the train set = ", train_precision)
     print("Recall of the train set = ", train_recall)
     print("F1_score of the train set = ", train_f1)
     
-    # pickle.dump(clf,open('SVC_model.sav','wb'))
+    pickle.dump(clf,open('SVC_model.sav','wb'))
     
-    # clf = pickle.load(open('SVC_model.sav','rb'))
-    x_dev_counts = count_vect.fit_transform(x_dev)
+    
+    
+    clf = pickle.load(open('SVC_model.sav','rb'))
+    x_dev_counts = count_vect.transform(x_dev)
     x_dev_tf = tf_transformer.transform(x_dev_counts).toarray()
     
-    predicted = clf.predict(x_train_tf)
+    predicted = clf.predict(x_dev_tf)
+    
+    train_accuracy = pickle.load(open('train_accuracy.p','rb'))
+    train_precision = pickle.load(open('train_precision.p','rb'))
+    train_recall = pickle.load(open('train_recall.p','rb'))
+    train_f1 = pickle.load(open('train_f1.p','rb'))
 
     test_accuracy = accuracy_score(y_dev, predicted)
     test_precision = precision_score(y_dev, predicted,average='weighted')
@@ -92,4 +103,4 @@ if __name__ == "__main__":
              'Recall': [train_recall,test_recall],
              'F1 Score': [train_f1,test_f1],
              })
-    d.to_csv('over_svc_results_true.csv')
+    d.to_csv('over_NB_results_false.csv')
